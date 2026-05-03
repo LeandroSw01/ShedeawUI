@@ -97,6 +97,8 @@ function ShedeawLib:Window(hubTitle)
         screenGui.Enabled = not screenGui.Enabled
         if isMobile and win.reopenBtn then win.reopenBtn.Visible = not screenGui.Enabled end
     end
+    win.ToggleUI = toggleUI
+    win.Binds[Enum.KeyCode.RightControl] = {callback = toggleUI, name = "Abrir/Fechar Menu"}
 
     local closeBtn = Instance.new("TextButton")
     closeBtn.Size = UDim2.new(0, 30, 0, 30)
@@ -518,7 +520,6 @@ function ShedeawLib:Window(hubTitle)
     UserInputService.InputBegan:Connect(function(input, processed)
         if processed then return end
         if input.UserInputType == Enum.UserInputType.Keyboard then
-            if input.KeyCode == Enum.KeyCode.T then toggleUI() end
             local b = win.Binds[input.KeyCode]
             if b then b.callback(true) end
         end
