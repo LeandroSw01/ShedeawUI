@@ -236,7 +236,7 @@ function ShedeawLib:Window(hubTitle)
         layout.SortOrder = Enum.SortOrder.LayoutOrder
         Instance.new("UIPadding", scrolling).PaddingTop = UDim.new(0, 5)
 
-        local tabObj = {scroll = scrolling, layoutOrder = 0}
+        local tabObj = {scroll = scrolling, btn = tabBtn, layoutOrder = 0}
         
         local function nextOrder()
             tabObj.layoutOrder = tabObj.layoutOrder + 1
@@ -250,7 +250,7 @@ function ShedeawLib:Window(hubTitle)
                 win.currentTab.stroke.Color = Color3.fromRGB(35, 35, 45)
                 win.currentTab.btn.TextColor3 = Color3.fromRGB(180, 180, 200)
             end
-            win.currentTab = {scroll = scrolling, btn = tabBtn, stroke = s}
+            win.currentTab = tabObj
             scrolling.Visible = true
             tabBtn.BackgroundColor3 = Color3.fromRGB(30, 30, 45)
             tabBtn.TextColor3 = Color3.fromRGB(61, 255, 160)
@@ -258,7 +258,7 @@ function ShedeawLib:Window(hubTitle)
         end)
 
         if not win.currentTab then
-            win.currentTab = {scroll = scrolling, btn = tabBtn, stroke = s}
+            win.currentTab = tabObj
             scrolling.Visible = true
             tabBtn.BackgroundColor3 = Color3.fromRGB(30, 30, 45)
             tabBtn.TextColor3 = Color3.fromRGB(61, 255, 160)
@@ -301,6 +301,12 @@ function ShedeawLib:Window(hubTitle)
             circle.Parent = btn
             corner(circle, 999)
 
+            local triggerBtn = Instance.new("TextButton")
+            triggerBtn.Size = UDim2.new(1, 0, 1, 0)
+            triggerBtn.BackgroundTransparency = 1
+            triggerBtn.Text = ""
+            triggerBtn.Parent = frame
+
             local enabled = default
             local function trigger()
                 enabled = not enabled
@@ -308,6 +314,7 @@ function ShedeawLib:Window(hubTitle)
                 TweenService:Create(circle, TweenInfo.new(0.2), {Position = enabled and UDim2.new(1, -20, 0, 2) or UDim2.new(0, 2, 0, 2)}):Play()
                 callback(enabled)
             end
+            triggerBtn.MouseButton1Click:Connect(trigger)
             btn.MouseButton1Click:Connect(trigger)
 
             if not isMobile then
@@ -532,7 +539,6 @@ function ShedeawLib:Window(hubTitle)
                     l.TextColor3 = Color3.fromRGB(61, 255, 160)
                     local connection
                     connection = UserInputService.InputBegan:Connect(function(input)
-                        if input.UserInputType == Enum.KeyCode.Unknown then return end
                         if input.UserInputType == Enum.UserInputType.Keyboard then
                             connection:Disconnect()
                             if input.KeyCode == Enum.KeyCode.Backspace then
