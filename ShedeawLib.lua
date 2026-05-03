@@ -497,34 +497,62 @@ function ShedeawLib:Window(hubTitle)
     -- Method to create the Global Binds Tab (Call this last to make it the last tab)
     function win:AddBindsTab()
         local bTab = win:Tab("Binds")
-        bTab:Section("Teclas Atalho")
+        bTab:Section("Gerenciar Atalhos")
+        
         local bList = Instance.new("Frame")
         bList.Size = UDim2.new(1, 0, 0, 0)
         bList.AutomaticSize = Enum.AutomaticSize.Y
         bList.BackgroundTransparency = 1
         bList.Parent = bTab.scroll
+
+        local function refreshBinds()
+            for _,v in ipairs(bList:GetChildren()) do if v:IsA("Frame") or v:IsA("TextButton") then v:Destroy() end end
+            for key, data in pairs(win.Binds) do
+                local btn = Instance.new("TextButton")
+                btn.Size = UDim2.new(1, 0, 0, 32)
+                btn.BackgroundColor3 = Color3.fromRGB(15, 15, 20)
+                btn.Text = ""
+                btn.Parent = bList
+                corner(btn, 6)
+                stroke(btn, Color3.fromRGB(25, 25, 35), 1)
+
+                local l = Instance.new("TextLabel")
+                l.Size = UDim2.new(1, -10, 1, 0)
+                l.Position = UDim2.new(0, 10, 0, 0)
+                l.BackgroundTransparency = 1
+                l.Text = "[" .. key.Name .. "] -> " .. data.name
+                l.TextColor3 = Color3.fromRGB(200, 200, 220)
+                l.Font = Enum.Font.GothamMedium
+                l.TextSize = 12
+                l.TextXAlignment = Enum.TextXAlignment.Left
+                l.Parent = btn
+
+                btn.MouseButton1Click:Connect(function()
+                    l.Text = "[Pressione uma tecla...] -> " .. data.name
+                    l.TextColor3 = Color3.fromRGB(61, 255, 160)
+                    local connection
+                    connection = UserInputService.InputBegan:Connect(function(input)
+                        if input.UserInputType == Enum.KeyCode.Unknown then return end
+                        if input.UserInputType == Enum.UserInputType.Keyboard then
+                            connection:Disconnect()
+                            if input.KeyCode == Enum.KeyCode.Backspace then
+                                win.Binds[key] = nil
+                            else
+                                local oldData = win.Binds[key]
+                                win.Binds[key] = nil
+                                win.Binds[input.KeyCode] = oldData
+                            end
+                            refreshBinds()
+                        end
+                    end)
+                end)
+            end
+        end
+
+        bTab.btn.MouseButton1Click:Connect(refreshBinds)
         task.spawn(function()
-            while win.isRunning and task.wait(0.5) do
-                if bTab.scroll.Visible then
-                    for _,v in ipairs(bList:GetChildren()) do if v:IsA("Frame") then v:Destroy() end end
-                    for key, data in pairs(win.Binds) do
-                        local f = Instance.new("Frame")
-                        f.Size = UDim2.new(1, 0, 0, 30)
-                        f.BackgroundColor3 = Color3.fromRGB(15, 15, 20)
-                        f.Parent = bList
-                        corner(f, 6)
-                        stroke(f, Color3.fromRGB(25, 25, 35), 1)
-                        local l = Instance.new("TextLabel")
-                        l.Size = UDim2.new(1, -10, 1, 0)
-                        l.Position = UDim2.new(0, 10, 0, 0)
-                        l.BackgroundTransparency = 1
-                        l.Text = "[" .. key.Name .. "] -> " .. data.name
-                        l.TextColor3 = Color3.fromRGB(200, 200, 220)
-                        l.Font = Enum.Font.Gotham
-                        l.TextXAlignment = Enum.TextXAlignment.Left
-                        l.Parent = f
-                    end
-                end
+            while win.isRunning and task.wait(1) do
+                if bTab.scroll.Visible then refreshBinds() end
             end
         end)
     end
