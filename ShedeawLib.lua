@@ -233,11 +233,15 @@ function ShedeawLib:Window(hubTitle)
         scrolling.Parent = contentContainer
         local layout = Instance.new("UIListLayout", scrolling)
         layout.Padding = UDim.new(0, 8)
+        layout.SortOrder = Enum.SortOrder.LayoutOrder
         Instance.new("UIPadding", scrolling).PaddingTop = UDim.new(0, 5)
 
-        local tabObj = {scroll = scrolling}
+        local tabObj = {scroll = scrolling, layoutOrder = 0}
         
-        tabBtn.MouseButton1Click:Connect(function()
+        local function nextOrder()
+            tabObj.layoutOrder = tabObj.layoutOrder + 1
+            return tabObj.layoutOrder
+        end
             if win.currentTab then
                 win.currentTab.scroll.Visible = false
                 win.currentTab.btn.BackgroundColor3 = Color3.fromRGB(20, 20, 25)
@@ -263,6 +267,7 @@ function ShedeawLib:Window(hubTitle)
             local frame = Instance.new("Frame")
             frame.Size = UDim2.new(1, 0, 0, 38)
             frame.BackgroundColor3 = Color3.fromRGB(15, 15, 20)
+            frame.LayoutOrder = nextOrder()
             frame.Parent = scrolling
             corner(frame, 8)
             stroke(frame, Color3.fromRGB(25, 25, 35), 1)
@@ -333,6 +338,7 @@ function ShedeawLib:Window(hubTitle)
             local btn = Instance.new("TextButton")
             btn.Size = UDim2.new(1, 0, 0, 36)
             btn.BackgroundColor3 = Color3.fromRGB(20, 20, 30)
+            btn.LayoutOrder = nextOrder()
             btn.Text = text
             btn.TextColor3 = Color3.fromRGB(220, 220, 240)
             btn.Font = Enum.Font.GothamMedium
@@ -373,6 +379,7 @@ function ShedeawLib:Window(hubTitle)
             local label = Instance.new("TextLabel")
             label.Size = UDim2.new(1, 0, 0, 20)
             label.BackgroundTransparency = 1
+            label.LayoutOrder = nextOrder()
             label.Text = "--- " .. string.upper(text) .. " ---"
             label.TextColor3 = Color3.fromRGB(100, 100, 130)
             label.TextSize = 10
@@ -384,6 +391,7 @@ function ShedeawLib:Window(hubTitle)
             local frame = Instance.new("Frame")
             frame.Size = UDim2.new(1, 0, 0, 38)
             frame.BackgroundColor3 = Color3.fromRGB(15, 15, 20)
+            frame.LayoutOrder = nextOrder()
             frame.Parent = scrolling
             corner(frame, 8)
             stroke(frame, Color3.fromRGB(25, 25, 35), 1)
@@ -413,6 +421,7 @@ function ShedeawLib:Window(hubTitle)
             local frame = Instance.new("Frame")
             frame.Size = UDim2.new(1, 0, 0, 38)
             frame.BackgroundColor3 = Color3.fromRGB(15, 15, 20)
+            frame.LayoutOrder = nextOrder()
             frame.Parent = scrolling
             corner(frame, 8)
             stroke(frame, Color3.fromRGB(25, 25, 35), 1)
@@ -422,8 +431,9 @@ function ShedeawLib:Window(hubTitle)
             lbl.Position = UDim2.new(0, 12, 0, 0)
             lbl.BackgroundTransparency = 1
             lbl.Text = text .. ": " .. (options[1] or "None")
-            lbl.TextColor3 = Color3.fromRGB(200, 200, 220)
-            lbl.Font = Enum.Font.Gotham
+            lbl.TextColor3 = Color3.fromRGB(220, 220, 235)
+            lbl.Font = Enum.Font.GothamMedium
+            lbl.TextSize = 13
             lbl.TextXAlignment = Enum.TextXAlignment.Left
             lbl.Parent = frame
             local arrow = Instance.new("TextLabel")
@@ -468,8 +478,9 @@ function ShedeawLib:Window(hubTitle)
                 oBtn.Size = UDim2.new(1, 0, 0, 28)
                 oBtn.BackgroundColor3 = Color3.fromRGB(18, 18, 24)
                 oBtn.Text = opt
-                oBtn.TextColor3 = Color3.fromRGB(180, 180, 200)
-                oBtn.Font = Enum.Font.Gotham
+                oBtn.TextColor3 = Color3.fromRGB(200, 200, 220)
+                oBtn.Font = Enum.Font.GothamMedium
+                oBtn.TextSize = 12
                 oBtn.Parent = list
                 corner(oBtn, 4)
                 oBtn.MouseButton1Click:Connect(function() lbl.Text = text .. ": " .. opt callback(opt) toggle() end)
