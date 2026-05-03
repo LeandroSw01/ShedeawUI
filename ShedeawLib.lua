@@ -153,7 +153,11 @@ function ShedeawLib:Window(hubTitle)
     searchBox:GetPropertyChangedSignal("Text"):Connect(function()
         local filter = searchBox.Text:lower()
         for _, data in ipairs(win.AllUIElements) do
-            data.parent.Visible = data.name:lower():find(filter) ~= nil
+            if win.currentTab and data.scroll == win.currentTab.scroll then
+                data.parent.Visible = data.name:lower():find(filter) ~= nil
+            else
+                data.parent.Visible = true
+            end
         end
     end)
 
@@ -210,7 +214,8 @@ function ShedeawLib:Window(hubTitle)
         tabBtn.BackgroundColor3 = Color3.fromRGB(20, 20, 25)
         tabBtn.Text = name
         tabBtn.TextColor3 = Color3.fromRGB(180, 180, 200)
-        tabBtn.Font = Enum.Font.GothamBold
+        tabBtn.Font = Enum.Font.GothamMedium
+        tabBtn.TextSize = 13
         tabBtn.Parent = sidebar
         corner(tabBtn, 8)
         local s = stroke(tabBtn, Color3.fromRGB(35, 35, 45), 1)
@@ -220,7 +225,8 @@ function ShedeawLib:Window(hubTitle)
         scrolling.Position = UDim2.new(0, 5, 0, 5)
         scrolling.BackgroundTransparency = 1
         scrolling.BorderSizePixel = 0
-        scrolling.ScrollBarThickness = 3
+        scrolling.ScrollBarThickness = 2
+        scrolling.ScrollBarImageColor3 = Color3.fromRGB(61, 255, 160)
         scrolling.Visible = false
         scrolling.Parent = contentContainer
         local layout = Instance.new("UIListLayout", scrolling)
@@ -234,10 +240,12 @@ function ShedeawLib:Window(hubTitle)
                 win.currentTab.scroll.Visible = false
                 win.currentTab.btn.BackgroundColor3 = Color3.fromRGB(20, 20, 25)
                 win.currentTab.stroke.Color = Color3.fromRGB(35, 35, 45)
+                win.currentTab.btn.TextColor3 = Color3.fromRGB(180, 180, 200)
             end
             win.currentTab = {scroll = scrolling, btn = tabBtn, stroke = s}
             scrolling.Visible = true
             tabBtn.BackgroundColor3 = Color3.fromRGB(30, 30, 45)
+            tabBtn.TextColor3 = Color3.fromRGB(61, 255, 160)
             s.Color = Color3.fromRGB(61, 255, 160)
         end)
 
@@ -245,6 +253,7 @@ function ShedeawLib:Window(hubTitle)
             win.currentTab = {scroll = scrolling, btn = tabBtn, stroke = s}
             scrolling.Visible = true
             tabBtn.BackgroundColor3 = Color3.fromRGB(30, 30, 45)
+            tabBtn.TextColor3 = Color3.fromRGB(61, 255, 160)
             s.Color = Color3.fromRGB(61, 255, 160)
         end
 
@@ -255,15 +264,16 @@ function ShedeawLib:Window(hubTitle)
             frame.Parent = scrolling
             corner(frame, 8)
             stroke(frame, Color3.fromRGB(25, 25, 35), 1)
-            table.insert(win.AllUIElements, {name = text, parent = frame})
+            table.insert(win.AllUIElements, {name = text, parent = frame, scroll = scrolling})
 
             local lbl = Instance.new("TextLabel")
             lbl.Size = UDim2.new(1, -60, 1, 0)
             lbl.Position = UDim2.new(0, 12, 0, 0)
             lbl.BackgroundTransparency = 1
             lbl.Text = text
-            lbl.TextColor3 = Color3.fromRGB(200, 200, 220)
-            lbl.Font = Enum.Font.Gotham
+            lbl.TextColor3 = Color3.fromRGB(220, 220, 235)
+            lbl.Font = Enum.Font.GothamMedium
+            lbl.TextSize = 13
             lbl.TextXAlignment = Enum.TextXAlignment.Left
             lbl.Parent = frame
 
@@ -323,11 +333,12 @@ function ShedeawLib:Window(hubTitle)
             btn.BackgroundColor3 = Color3.fromRGB(20, 20, 30)
             btn.Text = text
             btn.TextColor3 = Color3.fromRGB(220, 220, 240)
-            btn.Font = Enum.Font.GothamBold
+            btn.Font = Enum.Font.GothamMedium
+            btn.TextSize = 13
             btn.Parent = scrolling
             corner(btn, 8)
             stroke(btn, Color3.fromRGB(40, 40, 60), 1)
-            table.insert(win.AllUIElements, {name = text, parent = btn})
+            table.insert(win.AllUIElements, {name = text, parent = btn, scroll = scrolling})
             btn.MouseButton1Click:Connect(callback)
             
             if not isMobile then
