@@ -242,6 +242,8 @@ function ShedeawLib:Window(hubTitle)
             tabObj.layoutOrder = tabObj.layoutOrder + 1
             return tabObj.layoutOrder
         end
+
+        tabBtn.MouseButton1Click:Connect(function()
             if win.currentTab then
                 win.currentTab.scroll.Visible = false
                 win.currentTab.btn.BackgroundColor3 = Color3.fromRGB(20, 20, 25)
